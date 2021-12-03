@@ -1,0 +1,85 @@
+
+# Check elastic is running
+GET http://localhost:9200/
+
+###
+
+# Run to skip watermark warnings
+PUT http://localhost:9200/_cluster/settings
+Content-Type: application/json
+
+{
+   "transient": {
+       "cluster.routing.allocation.disk.watermark.low": "100gb",
+       "cluster.routing.allocation.disk.watermark.high": "50gb",
+       "cluster.routing.allocation.disk.watermark.flood_stage": "10gb",
+       "cluster.info.update.interval": "1m",
+       "cluster.routing.allocation.disk.threshold_enabled": false
+   }
+}
+
+###
+
+# Run to skip watermark warnings
+PUT http://localhost:9200/_all/_settings
+Content-Type: application/json
+
+{
+  "index.blocks.read_only_allow_delete": false
+}
+
+###
+
+# Run to skip watermark warnings
+PUT http://localhost:9200/_settings
+Content-Type: application/json
+
+{
+  "index": {
+    "blocks": {
+      "read_only_allow_delete": "false"
+    }
+  }
+}
+
+###
+
+# List all index
+GET http://localhost:9200/_cat/indices
+Accept: application/json
+
+###
+
+# Create index
+PUT http://localhost:9200/dataops-index
+
+###
+
+# Index new doc
+POST http://localhost:9200/dataops-index/_doc/
+Content-Type: application/json
+
+{
+    "Field": "value"
+}
+
+###
+
+# Create index template for IBGE
+PUT http://localhost:9200/_template/ibgemunicipios
+Content-Type: application/json
+
+{
+  "template": {
+    "mappings": {
+      "properties": {
+        "geoPos": {
+          "type": "geo_point"
+        }
+      }
+    }
+  },
+  "index_patterns": [
+    "ibgemunicipios"
+  ]
+}

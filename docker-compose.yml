@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  elasticsearch:
+    image: docker.io/bitnami/elasticsearch:7
+    hostname: 'elasticsearch'
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+    volumes:
+      - 'elasticsearch_data:/bitnami/elasticsearch/data'
+    networks:
+      - dataops_net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.8'
+          memory: 1G
+volumes:
+  elasticsearch_data:
+    driver: local
+
+networks:
+  dataops_net:
+    external:
+      name: dataops_net
